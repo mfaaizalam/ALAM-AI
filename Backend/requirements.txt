@@ -14,5 +14,7 @@ python-multipart
 
 google-genai
 
+email-validator
+pydantic[email]
 pypdf
 PyMuPDF==1.26.3
