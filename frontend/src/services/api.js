@@ -4,7 +4,7 @@ import { getToken, clearSession } from "../utils/storage";
 // Single Axios instance used by every service file. Never call axios
 // directly from a component — route all requests through here.
 const api = axios.create({
-  baseURL: "https://alam-ai.vercel.app/api",
+  baseURL: "https://alam-ai.vercel.app",
   headers: {
     "Content-Type": "application/json",
   },
