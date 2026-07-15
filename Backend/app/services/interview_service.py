@@ -254,10 +254,10 @@ def submit_answer(
             conversation_history=conversation_history,
         )
         complete_interview(
-            db=db,
-            interview=interview,
-            score=evaluation["overall_score"],
-            feedback=evaluation["feedback"]
+        db=db,
+        interview=interview,
+        score=evaluation["score"],
+        feedback=evaluation["feedback"]
         )
         return  {
             "Completed":True,
