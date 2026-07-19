@@ -10,6 +10,13 @@ const api = axios.create({
   },
 });
 
+// const api = axios.create({
+//   baseURL: "http://127.0.0.1:8000",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
+
 // Attach the JWT bearer token (if present) to every outgoing request.
 api.interceptors.request.use((config) => {
   const token = getToken();

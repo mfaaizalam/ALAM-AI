@@ -172,7 +172,7 @@ def analyze_cv(cv_text:str)->str:
     {cv_text}
     """
     response = client.models.generate_content(
-        model ="gemini-2.5-flash",
+        model ="gemini-3.5-flash",
         contents =prompt
     )
     return  parse_json(response.text)
@@ -240,44 +240,49 @@ Rules:
 """
     
     response = client.models.generate_content(
-    model="gemini-2.5-flash",
+    model="gemini-3.5-flash",
     contents=prompt
     )  
     return response.text.strip()
 
 
 def evaluate_interview(
-       candidate_profile:dict,
-       conversation_history:list
-)->dict:
+       candidate_profile: dict,
+       conversation_history: list
+) -> dict:
     prompt = f"""
 You are a Senior Software Engineering Interviewer with over 15 years of experience.
 
-Your task is to evaluate a completed mock interview.
+Your task is to evaluate a completed software engineering interview professionally and fairly.
+You are a strict Senior Software Engineering interviewer at a top-tier technology company.
 
+Do NOT be generous with scores.
 Candidate Profile:
 {candidate_profile}
 
 Complete Interview Conversation:
 {conversation_history}
 
-Evaluate the candidate fairly and professionally.
+Evaluate the candidate based on:
 
-Scoring Guidelines:
-
-- Technical Knowledge
-- Problem Solving
-- Communication Skills
-- Project Understanding
-- Confidence
-- Overall Performance
+1. Technical Knowledge
+2. Communication Skills
+3. Problem Solving Ability
+4. Confidence
+5. Project Knowledge
+6. Overall Performance
 
 Return ONLY valid JSON.
 
-Format:
+The JSON MUST exactly follow this format:
 
 {{
-    "score": 0,
+    "overall_score": 0,
+    "technical_score": 0,
+    "communication_score": 0,
+    "problem_solving_score": 0,
+    "confidence_score": 0,
+    "project_knowledge_score": 0,
     "strengths": [
         ""
     ],
@@ -285,20 +290,33 @@ Format:
         ""
     ],
     "feedback": "",
-    "recommendation": "Hire | Consider | Reject"
+    "recommendation": "Hire"
 }}
 
 Rules:
 
-- Score must be between 0 and 100.
-- Be objective.
-- Mention both strengths and weaknesses.
-- Feedback should be constructive.
-- Do not include markdown.
-- Do not include explanation outside JSON.
+- Return ONLY valid JSON.
+- Do not use markdown.
+- Do not add explanations outside JSON.
+- Every score must be an integer between 0 and 100.
+- overall_score should represent the overall interview performance.
+- technical_score should evaluate technical knowledge.
+- communication_score should evaluate spoken communication.
+- problem_solving_score should evaluate analytical thinking.
+- confidence_score should evaluate confidence during the interview.
+- project_knowledge_score should evaluate understanding of projects.
+- Provide at least 3 strengths.
+- Provide at least 3 weaknesses.
+- Feedback should be constructive and professional.
+- recommendation must be exactly one of:
+  - Hire
+  - Consider
+  - Reject
 """
+
     response = client.models.generate_content(
-    model="gemini-2.5-flash",
-    contents=prompt
-    )  
+        model="gemini-3.5-flash",
+        contents=prompt
+    )
+
     return parse_json(response.text)

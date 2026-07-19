@@ -210,19 +210,28 @@ def get_conversation_history(
     return conversation_history
 
 def complete_interview(
-        db:Session,
-        interview:InterviewSession,
-        score:int,
-        feedback:str
+    db: Session,
+    interview: InterviewSession,
+    overall_score: int,
+    technical_score: int,
+    communication_score: int,
+    problem_solving_score: int,
+    confidence_score: int,
+    project_knowledge_score: int,
+    feedback: str
 ):
     interview.status = "completed"
-    interview.score =score
+    interview.overall_score = overall_score
+    interview.technical_score = technical_score
+    interview.communication_score = communication_score
+    interview.problem_solving_score = problem_solving_score
+    interview.confidence_score = confidence_score
+    interview.project_knowledge_score = project_knowledge_score
     interview.feedback = feedback
 
     db.commit()
     db.refresh(interview)
     return interview
-
 
 def increment_question(
         db:Session,
@@ -240,6 +249,7 @@ def submit_answer(
     answer:str
 ):
     interview =get_interview_session(db,session_id)
+    
     save_message(
         db=db,
         session_id=session_id,
@@ -248,7 +258,7 @@ def submit_answer(
         question_number=interview.current_question
     )
     conversation_history  = get_conversation_history(db=db,session_id=session_id)
-    if (interview.current_question>=interview.total_questions):
+    if (interview.current_question>=8):
         evaluation=evaluate_interview(
             candidate_profile = interview.candidate_profile,
             conversation_history=conversation_history,
@@ -256,13 +266,18 @@ def submit_answer(
         complete_interview(
         db=db,
         interview=interview,
-        score=evaluation["score"],
-        feedback=evaluation["feedback"]
+        overall_score=evaluation["overall_score"],
+        technical_score=evaluation["technical_score"],
+        communication_score=evaluation["communication_score"],
+         problem_solving_score=evaluation["problem_solving_score"],
+         confidence_score=evaluation["confidence_score"],
+         project_knowledge_score=evaluation["project_knowledge_score"],
+         feedback=evaluation["feedback"]
         )
-        return  {
-            "Completed":True,
-            "result":evaluation,
-        }
+        return {
+           "completed": True,
+            "result": evaluation,
+            }
     else:
         interview =increment_question(db=db,interview=interview)
         next_question = generate_next_question(

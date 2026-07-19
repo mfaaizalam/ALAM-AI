@@ -78,7 +78,7 @@ export default function Result() {
               Interview Complete
             </p>
             <h1 className="mt-1 text-2xl font-display font-semibold text-navy-950">
-              Session #{sessionId} Results
+              Interview Summary
             </h1>
             <p className="mt-2 text-ink-600">{result.feedback}</p>
           </div>

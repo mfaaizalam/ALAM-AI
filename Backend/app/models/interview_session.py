@@ -31,3 +31,9 @@ class InterviewSession(Base):
         DateTime(timezone=True),
         nullable=True
     )
+    overall_score = Column(Integer, nullable=True)
+    technical_score = Column(Integer, nullable=True)
+    communication_score = Column(Integer, nullable=True)
+    problem_solving_score = Column(Integer, nullable=True)
+    confidence_score = Column(Integer, nullable=True)
+    project_knowledge_score = Column(Integer, nullable=True)
