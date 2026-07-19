@@ -29,7 +29,12 @@ export default function Interview() {
   const [error, setError] = useState("");
   const chatEndRef = useRef(null);
 
-  const { speak, speaking, supported: ttsSupported } = useSpeechSynthesis();
+  const {
+  speak,
+  speaking,
+  supported: ttsSupported,
+  voicesReady,
+} = useSpeechSynthesis();
 
   const {
     transcript,
@@ -53,11 +58,27 @@ export default function Interview() {
   // Speak the current question aloud whenever it changes, using a voice
   // that matches the selected interviewer's gender (Alam = male, Zainab = female).
   useEffect(() => {
-    if (currentQuestion && ttsSupported) {
-      speak(currentQuestion, interviewer);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentQuestion]);
+  if (
+    currentQuestion &&
+    ttsSupported &&
+    voicesReady &&
+    interviewer
+  ) {
+    speak(currentQuestion, interviewer);
+  }
+}, [
+  currentQuestion,
+  interviewer,
+  ttsSupported,
+  voicesReady,
+  speak,
+]);
+ 
+useEffect(() => {
+  return () => {
+    window.speechSynthesis.cancel();
+  };
+}, []);
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -97,9 +118,16 @@ export default function Interview() {
         setMessages((prev) => [...prev, { role: "assistant", text: data.question }]);
       }
     } catch (err) {
-      setError(
-        err.response?.data?.detail || "Couldn't submit your answer. Please try again."
-      );
+      const status = err.response?.status;
+      if (status === 500 || status === 503 || status === 429) {
+        setError(
+          "AI service is temporarily unavailable due to API usage limits. Please try again later."
+        );
+      } else {
+        setError(
+          err.response?.data?.detail || "Couldn't submit your answer. Please try again."
+        );
+      }
     } finally {
       setSubmitting(false);
     }

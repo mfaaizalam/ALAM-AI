@@ -258,7 +258,7 @@ def submit_answer(
         question_number=interview.current_question
     )
     conversation_history  = get_conversation_history(db=db,session_id=session_id)
-    if (interview.current_question>=8):
+    if (interview.current_question>=interview.total_questions):
         evaluation=evaluate_interview(
             candidate_profile = interview.candidate_profile,
             conversation_history=conversation_history,
