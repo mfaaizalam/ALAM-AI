@@ -45,11 +45,18 @@ export default function UploadCV() {
           questionNumber: data.question_number,
         },
       });
-    } catch (err) {
-      setError(
-        err.response?.data?.detail ||
-          "We couldn't process your CV. Please try again with a different PDF."
-      );
+     } catch (err) {
+      const status = err.response?.status;
+      if (!err.response || status === 500 || status === 503 || status === 429) {
+        setError(
+          "Gemini is temporarily unavailable due to API usage limits. Please try again later."
+        );
+      } else {
+        setError(
+          err.response?.data?.detail ||
+            "We couldn't process your CV. Please try again with a different PDF."
+        );
+      }
       setAnalyzing(false);
     }
   };
