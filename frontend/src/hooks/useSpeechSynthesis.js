@@ -176,20 +176,27 @@ const MALE_HINTS = [
   "guy",
 ];
 
-function pickVoice(voices, gender) {
+function pickVoice(voices, interviewer) {
   if (!voices.length) return null;
 
-  const hints = gender === "Female" ? FEMALE_HINTS : MALE_HINTS;
-
-  const voice = voices.find(
-    (v) =>
-      v.lang.toLowerCase().startsWith("en") &&
-      hints.some((h) => v.name.toLowerCase().includes(h))
+  let voice = voices.find(
+    (v) => v.name === interviewer.voiceName
   );
 
   if (voice) return voice;
 
+  if (interviewer.name === "Alam") {
+    voice = voices.find((v) =>
+      v.name.includes("Microsoft David")
+    );
+  } else {
+    voice = voices.find((v) =>
+      v.name.includes("Microsoft Zira")
+    );
+  }
+
   return (
+    voice ||
     voices.find((v) => v.lang.startsWith("en")) ||
     voices[0]
   );
@@ -239,8 +246,8 @@ export default function useSpeechSynthesis() {
         currentGenderRef.current !== interviewer?.gender
       ) {
         selectedVoiceRef.current = pickVoice(
-          voicesRef.current,
-          interviewer?.gender
+         voicesRef.current,
+        interviewer
         );
 
         currentGenderRef.current = interviewer?.gender;

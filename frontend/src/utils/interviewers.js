@@ -7,6 +7,7 @@ export const INTERVIEWERS = [
     id: "alam",
     name: "Alam",
     gender: "Male",
+    voiceName: "Microsoft David - English (United States)",
     avatar: alamAvatar,
     voice: { pitch: 0.95, rate: 1 },
     blurb: "Calm and methodical — digs into the technical detail.",
@@ -15,11 +16,11 @@ export const INTERVIEWERS = [
     id: "zainab",
     name: "Zainab",
     gender: "Female",
+    voiceName: "Microsoft Zira - English (United States)",
     avatar: zainabAvatar,
     voice: { pitch: 1.1, rate: 1 },
     blurb: "Warm and conversational — focuses on your story and impact.",
   },
 ];
-
 export const getInterviewer = (id) =>
   INTERVIEWERS.find((i) => i.id === id) || INTERVIEWERS[0];
